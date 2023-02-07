@@ -7,7 +7,7 @@ module.exports.newBilling = async (req, res) => {
     const db = getDb();
     const billings = db.collection("billings");
     const billing = req.body.data;
-    const result = await billings.insertOne(billing);
+    const result = await billings.insert(billing);
 
     if (result.acknowledged) {
       res.status(200).json({
@@ -22,9 +22,7 @@ module.exports.newBilling = async (req, res) => {
         data: result,
       });
     }
-  } catch (error) {
-    console.log(error.message);
-  }
+  } catch (error) {}
 };
 
 // get bill with pagination
@@ -43,6 +41,7 @@ module.exports.getBilling = async (req, res) => {
       .find({})
       .skip(queries.skip)
       .limit(queries.limit)
+      .sort(req.body.search)
       .toArray();
 
     if (result) {
@@ -58,9 +57,7 @@ module.exports.getBilling = async (req, res) => {
         data: result,
       });
     }
-  } catch (error) {
-    console.log(error.message);
-  }
+  } catch (error) {}
 };
 
 // delete bill
@@ -71,7 +68,7 @@ module.exports.deleteBilling = async (req, res) => {
 
     const { id } = req.params;
     const result = await billings.deleteOne({ _id: ObjectId(id) });
-    console.log(result);
+
     if (result) {
       res.status(200).json({
         status: true,
@@ -85,7 +82,39 @@ module.exports.deleteBilling = async (req, res) => {
         data: result,
       });
     }
-  } catch (error) {
-    console.log(error.message);
-  }
+  } catch (error) {}
+};
+
+// update  bill
+module.exports.updateBilling = async (req, res) => {
+  try {
+    const db = getDb();
+    const billings = db.collection("billings");
+    const update = req.body.update;
+
+    const id = { _id: ObjectId(req.params.id) };
+
+    const result = await billings.updateOne(id, {
+      $set: {
+        name: update.name,
+        email: update.email,
+        phone: update.phone,
+        amount: update.amount,
+      },
+    });
+
+    if (result) {
+      res.status(200).json({
+        status: true,
+        message: "Data update success",
+        data: result,
+      });
+    } else {
+      res.status(400).json({
+        status: false,
+        message: "Data is not update success",
+        data: result,
+      });
+    }
+  } catch (error) {}
 };
