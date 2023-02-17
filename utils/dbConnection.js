@@ -16,7 +16,7 @@ module.exports = {
       }
 
       dbConnection = db.db("power_hack-bill");
-      console.log("Successfully connected to MongoDB.");
+      console.log("Successfully connected to ");
 
       return callback();
     });
