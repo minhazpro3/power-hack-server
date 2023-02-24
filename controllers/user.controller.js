@@ -102,6 +102,7 @@ module.exports.getJobs = async (req, res) => {
   } catch (error) {}
 };
 
+// get jobs with id
 module.exports.getJobsById = async (req, res) => {
   try {
     const db = getDb();
@@ -119,6 +120,40 @@ module.exports.getJobsById = async (req, res) => {
       res.status(400).json({
         status: false,
         message: "Data is not find  success",
+        data: result,
+      });
+    }
+  } catch (error) {}
+};
+
+// appply
+module.exports.jobApply = async (req, res) => {
+  try {
+    const userId = req.body.userId;
+    const JobId = req.body.jobId;
+    const email = req.body.email;
+
+    const db = getDb();
+    const users = db.collection("jobs");
+
+    const filter = { _id: ObjectId(JobId) };
+
+    const updateData = {
+      $push: { applicants: { id: ObjectId(userId), email } },
+    };
+
+    const result = await users.updateOne(filter, updateData);
+    console.log(result);
+    if (result) {
+      res.status(200).json({
+        status: true,
+        message: "apply success",
+        data: result,
+      });
+    } else {
+      res.status(400).json({
+        status: false,
+        message: "apply is not success",
         data: result,
       });
     }
