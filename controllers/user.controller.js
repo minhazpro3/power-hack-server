@@ -85,7 +85,7 @@ module.exports.getJobs = async (req, res) => {
     const db = getDb();
     const users = db.collection("jobs");
     const result = await users.find({}).toArray();
-    console.log(result);
+
     if (result) {
       res.status(200).json({
         status: true,
@@ -109,7 +109,7 @@ module.exports.getJobsById = async (req, res) => {
     const users = db.collection("jobs");
     const id = { _id: ObjectId(req.params.id) };
     const result = await users.findOne(id);
-    console.log(result);
+
     if (result) {
       res.status(200).json({
         status: true,
@@ -143,7 +143,7 @@ module.exports.jobApply = async (req, res) => {
     };
 
     const result = await users.updateOne(filter, updateData);
-    console.log(result);
+
     if (result) {
       res.status(200).json({
         status: true,
