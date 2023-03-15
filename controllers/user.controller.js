@@ -125,6 +125,7 @@ module.exports.getJobsById = async (req, res) => {
     }
   } catch (error) {}
 };
+// getJobsByEmail
 module.exports.getJobsByEmail = async (req, res) => {
   try {
     const db = getDb();
