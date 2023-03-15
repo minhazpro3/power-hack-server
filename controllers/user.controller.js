@@ -125,24 +125,55 @@ module.exports.getJobsById = async (req, res) => {
     }
   } catch (error) {}
 };
+module.exports.getJobsByEmail = async (req, res) => {
+  try {
+    const db = getDb();
+    const users = db.collection("jobs");
+    const email = { email: req.params.email };
+    const result = await users.find(email).toArray();
+
+    if (result) {
+      res.status(200).json({
+        status: true,
+        message: "Data find success",
+        data: result,
+      });
+    } else {
+      res.status(400).json({
+        status: false,
+        message: "Data is not find  success",
+        data: result,
+      });
+    }
+  } catch (error) {}
+};
 
 // appply
 module.exports.jobApply = async (req, res) => {
   try {
     const userId = req.body.userId;
     const JobId = req.body.jobId;
+    const name = req.body.name;
     const email = req.body.email;
 
+    const id = req.body.jobId;
+
     const db = getDb();
-    const users = db.collection("jobs");
+    const jobs = db.collection("jobs");
 
-    const filter = { _id: ObjectId(JobId) };
-
+    const filter = { _id: ObjectId(id) };
     const updateData = {
-      $push: { applicants: { id: ObjectId(userId), email } },
+      $push: {
+        applicants: {
+          userId,
+          JobId,
+          name,
+          email,
+        },
+      },
     };
 
-    const result = await users.updateOne(filter, updateData);
+    const result = await jobs.updateOne(filter, updateData);
 
     if (result) {
       res.status(200).json({
@@ -154,6 +185,31 @@ module.exports.jobApply = async (req, res) => {
       res.status(400).json({
         status: false,
         message: "apply is not success",
+        data: result,
+      });
+    }
+  } catch (error) {}
+};
+
+// get user with id
+module.exports.getUserById = async (req, res) => {
+  try {
+    const db = getDb();
+
+    const users = db.collection("users");
+    const id = { _id: ObjectId(req.params.id) };
+    const result = await users.findOne(id);
+
+    if (result) {
+      res.status(200).json({
+        status: true,
+        message: "Data find success",
+        data: result,
+      });
+    } else {
+      res.status(400).json({
+        status: false,
+        message: "Data is not find  success",
         data: result,
       });
     }

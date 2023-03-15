@@ -13,6 +13,8 @@ router.route("/get-user/:email").get(userControllers.getUser);
 router.route("/post-job").post(userControllers.jobPost);
 router.route("/get-job").get(userControllers.getJobs);
 router.route("/get-jobById/:id").get(userControllers.getJobsById);
+router.route("/get-jobByEmail/:email").get(userControllers.getJobsByEmail);
 router.route("/job-apply").patch(userControllers.jobApply);
+router.route("/get-userById/:id").get(userControllers.getUserById);
 // router.route("/upload").post(userControllers.fileUpload);
 module.exports = router;
